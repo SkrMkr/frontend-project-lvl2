@@ -16,21 +16,23 @@ const genDiff = (file1, file2) => {
   let result = {};
 
   for (const key of unitedKeys) {
-    if (keys1.hasOwnProperty(key) && keys2.hasOwnProperty(key) && keys1[key] === keys2[key]) {
-      result[key] = objectForFile1.key;
+    if (_.has(objectForFile1, key) && _.has(objectForFile2, key) && objectForFile1[key] === objectForFile2[key]) {
+      result[`  ${key}`] = objectForFile1[key];
     }
-    if (keys1.hasOwnProperty(key) && keys2.hasOwnProperty(key) && keys1[key] !== keys2[key]) {
-      result[`-${key}`] = objectForFile1[key];
-      result[`+${key}`] = objectForFile2[key];
+    if (_.has(objectForFile1, key) && _.has(objectForFile2, key) && objectForFile1[key] !== objectForFile2[key]) {
+      result[`- ${key}`] = objectForFile1[key];
+      result[`+ ${key}`] = objectForFile2[key];
     }
-    if (keys1.hasOwnProperty(key) && !keys2.hasOwnProperty(key)) {
-      result[`-${key}`] = objectForFile1[key];
+    if (_.has(objectForFile1, key) && !_.has(objectForFile2, key)) {
+      result[`- ${key}`] = objectForFile1[key];
     }
-    if (!keys1.hasOwnProperty(key) && keys2.hasOwnProperty(key)) {
-      result[`+${key}`] = objectForFile2[key];
+    if (!_.has(objectForFile1, key) && _.has(objectForFile2, key)) {
+      result[`+ ${key}`] = objectForFile2[key];
     }
   }
-  return JSON.stringify(result);
+
+  const stringResult = JSON.stringify(result, null, '\n  ');
+  return stringResult.replace(/"/g,"");
 };
 
 export default genDiff;
