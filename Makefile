@@ -1,4 +1,6 @@
-make lint: 
+lint: 
 	npx eslint .
-make test:
+test:
 	NODE_OPTIONS=--experimental-vm-modules npm test
+install: 
+	npm ci
