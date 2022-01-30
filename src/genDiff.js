@@ -7,10 +7,10 @@ const buildAst = (objectForFile1, objectForFile2) => {
   const unitedKeys = (_.union(keys1, keys2)).sort();
 
   const result = unitedKeys.map((key) => {
-    if (_.has(objectForFile1, key) && !_.has(objectForFile2, key)) {
+    if (!_.has(objectForFile2, key)) {
       return { key, value: objectForFile1[key], state: 'deleted' };
     }
-    if (!_.has(objectForFile1, key) && _.has(objectForFile2, key)) {
+    if (!_.has(objectForFile1, key)) {
       return { key, value: objectForFile2[key], state: 'added' };
     }
     if (_.isObject(objectForFile1[key]) && _.isObject(objectForFile2[key])) {
@@ -27,27 +27,50 @@ const buildAst = (objectForFile1, objectForFile2) => {
   return result;
 };
 
-const printAst = (tree) => {
+const tabs = (depth) => ' '.repeat(4 * depth - 2);
+
+const printValue = (value, depth) => {
+  if (_.isObject(value)) {
+    return Object.entries(value).map(([key, val]) => {
+      return `{\n${tabs(depth)} ${key}: ${printValue(val, depth + 1)}\n${tabs(depth - 1)}  }`;
+    }).join('\n');
+  }
+  return value;
+};
+
+const printLine = (depth, sign, key, value) => {
+  console.log(`${tabs(depth)}${sign} ${key}: ${printValue(value, depth + 1)}`);
+};
+
+const printAst = (tree, depth = 1) => {
+  if (depth === 1) {
+    console.log('{');
+  }
+
   tree.forEach((child) => {
     if (child.state === 'deleted') {
-      console.log(`-${child.key}: ${child.value}`);
+      printLine(depth, '-', child.key, child.value);
     }
     if (child.state === 'added') {
-      console.log(`+${child.key}: ${child.value}`);
+      printLine(depth, '+', child.key, child.value);
     }
     if (child.state === 'unchanged') {
-      console.log(`${child.key}: ${child.value}`);
+      printLine(depth, ' ', child.key, child.value);
     }
     if (child.state === 'changed') {
-      console.log(`-${child.key}: ${child.oldValue}`);
-      console.log(`+${child.key}: ${child.newValue}`);
+      printLine(depth, '-', child.key, child.oldValue);
+      printLine(depth, '+', child.key, child.newValue);
     }
     if (child.tree) {
-      console.log(`${child.key} {`);
-      printAst(child.tree);
-      console.log('}');
+      console.log(`${tabs(depth)}  ${child.key} {`);
+      printAst(child.tree, depth + 1);
+      console.log(`${tabs(depth)}  }`);
     }
   });
+
+  if (depth === 1) {
+    console.log('}');
+  }
 };
 
 const genDiff = (file1, file2) => {
