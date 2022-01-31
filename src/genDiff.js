@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import parse from './parser.js';
+import stylish from './formatters/stylish.js';
 
 const buildAst = (objectForFile1, objectForFile2) => {
   const keys1 = Object.keys(objectForFile1);
@@ -27,58 +28,21 @@ const buildAst = (objectForFile1, objectForFile2) => {
   return result;
 };
 
-const tabs = (depth) => ' '.repeat(4 * depth - 2);
-
-const printValue = (value, depth) => {
-  if (_.isObject(value)) {
-    return Object.entries(value).map(([key, val]) => {
-      return `{\n${tabs(depth)} ${key}: ${printValue(val, depth + 1)}\n${tabs(depth - 1)}  }`;
-    }).join('\n');
-  }
-  return value;
-};
-
-const printLine = (depth, sign, key, value) => {
-  console.log(`${tabs(depth)}${sign} ${key}: ${printValue(value, depth + 1)}`);
-};
-
-const printAst = (tree, depth = 1) => {
-  if (depth === 1) {
-    console.log('{');
-  }
-
-  tree.forEach((child) => {
-    if (child.state === 'deleted') {
-      printLine(depth, '-', child.key, child.value);
-    }
-    if (child.state === 'added') {
-      printLine(depth, '+', child.key, child.value);
-    }
-    if (child.state === 'unchanged') {
-      printLine(depth, ' ', child.key, child.value);
-    }
-    if (child.state === 'changed') {
-      printLine(depth, '-', child.key, child.oldValue);
-      printLine(depth, '+', child.key, child.newValue);
-    }
-    if (child.tree) {
-      console.log(`${tabs(depth)}  ${child.key} {`);
-      printAst(child.tree, depth + 1);
-      console.log(`${tabs(depth)}  }`);
-    }
-  });
-
-  if (depth === 1) {
-    console.log('}');
+const formattedAst = (ast, formatter) => {
+  switch (formatter) {
+    case 'stylish':
+      return stylish(ast);
+    default:
+      return 'unknown formatter';
   }
 };
 
-const genDiff = (file1, file2) => {
+const genDiff = (file1, file2, formatter) => {
   const objectForFile1 = parse(file1);
   const objectForFile2 = parse(file2);
 
   const ast = buildAst(objectForFile1, objectForFile2);
-  printAst(ast);
+  return formattedAst(ast, formatter);
 };
 
 export default genDiff;
