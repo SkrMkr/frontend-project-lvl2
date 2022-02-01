@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import parse from './parser.js';
 import stylish from './formatters/stylish.js';
+import plain from './formatters/plain.js';
 
 const buildAst = (objectForFile1, objectForFile2) => {
   const keys1 = Object.keys(objectForFile1);
@@ -30,14 +31,14 @@ const buildAst = (objectForFile1, objectForFile2) => {
 
 const formattedAst = (ast, formatter) => {
   switch (formatter) {
-    case 'stylish':
-      return stylish(ast);
+    case 'plain':
+      return plain(ast);
     default:
-      return 'unknown formatter';
+      return stylish(ast);
   }
 };
 
-const genDiff = (file1, file2, formatter) => {
+const genDiff = (file1, file2, formatter = 'stylish') => {
   const objectForFile1 = parse(file1);
   const objectForFile2 = parse(file2);
 

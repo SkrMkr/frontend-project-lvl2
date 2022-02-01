@@ -1,3 +1,4 @@
+
 import _ from 'lodash';
 
 const tabs = (depth) => ' '.repeat(4 * depth - 2);
@@ -7,16 +8,19 @@ const printValue = (value, depth) => {
 
   const content = Object
     .entries(value)
-    .map(([key, val]) => `${tabs(depth)}  ${key}: ${printValue(val, depth + 1)}`)
-    .join('\n');
+    .map(([key, val]) => {
+      return `${tabs(depth)}  ${key}: ${printValue(val, depth + 1)}`;
+    }).join('\n');
 
   return `{\n${content}\n${tabs(depth - 1)}  }`;
 };
 
-const printLine = (depth, sign, key, value) => `${tabs(depth)}${sign} ${key}: ${printValue(value, depth + 1)}`;
+const printLine = (depth, sign, key, value) => {
+  return `${tabs(depth)}${sign} ${key}: ${printValue(value, depth + 1)}`;
+};
 
 const stylish = (tree, depth = 1) => {
-  const content = [];
+  let content = []
 
   tree.forEach((child) => {
     if (child.state === 'deleted') {
