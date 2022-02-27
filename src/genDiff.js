@@ -5,7 +5,7 @@ import formattedAst from './formatters/index.js';
 const buildAst = (objectForFile1, objectForFile2) => {
   const keys1 = Object.keys(objectForFile1);
   const keys2 = Object.keys(objectForFile2);
-  const unitedKeys = (_.union(keys1, keys2)).sort();
+  const unitedKeys = _.sortBy(_.union(keys1, keys2));
 
   const result = unitedKeys.map((key) => {
     if (!_.has(objectForFile2, key)) {
