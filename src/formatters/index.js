@@ -1,11 +1,10 @@
 import plain from './plain.js';
 import stylish from './stylish.js';
-import json from './json.js';
 
-const formattedAst = (ast, formatter) => {
+const format = (ast, formatter) => {
   switch (formatter) {
     case 'json':
-      return json(ast);
+      return JSON.stringify(ast);
     case 'plain':
       return plain(ast);
     default:
@@ -13,4 +12,4 @@ const formattedAst = (ast, formatter) => {
   }
 };
 
-export default formattedAst;
+export default format;
