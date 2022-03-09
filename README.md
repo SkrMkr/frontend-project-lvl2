@@ -33,12 +33,12 @@ Options:
 
 The diff is based on how the files have changed relative to each other. Data can be output in three formatters: 
 
-+ Stylish
++ **Stylish**
 [![asciicast](https://asciinema.org/a/BbneC9w15HzbkW4UvtQ0Yfhzl.svg)](https://asciinema.org/a/BbneC9w15HzbkW4UvtQ0Yfhzl)
 
-+ Plain
++ **Plain**
 [![asciicast](https://asciinema.org/a/wgZdLC2S3MXJNdtQDuY3rWaFa.svg)](https://asciinema.org/a/wgZdLC2S3MXJNdtQDuY3rWaFa)
 
-+ Json
++ **Json**
   [![asciicast](https://asciinema.org/a/54ix4K13oa4xFsEh3e5wZ5bZd.svg)](https://asciinema.org/a/54ix4K13oa4xFsEh3e5wZ5bZd)
 
